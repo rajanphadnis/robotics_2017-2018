@@ -1,4 +1,3 @@
-
 package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
@@ -17,9 +16,8 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 
 @Autonomous
 
-public class Auto extends LinearOpMode {
-
-    /* Declare OpMode members. */
+public class AutoBlueBackLeft extends LinearOpMode{
+/* Declare OpMode members. */
     // HardwarePushbot         robot   = new HardwarePushbot();   // Use a Pushbot's hardware
     private ElapsedTime     runtime = new ElapsedTime();
 
@@ -57,7 +55,7 @@ public class Auto extends LinearOpMode {
         }
     }
     public void liftBlock() {
-        liftermotor.setPower(0.2);
+        liftermotor.setPower(0.15);
         runtime.reset();
         while (opModeIsActive() && (runtime.seconds() < 0.0001)) {
             telemetry.addData("Path", "Lifting: %2.5f S Elapsed", runtime.seconds());
@@ -190,14 +188,14 @@ public class Auto extends LinearOpMode {
         liftBlock();
         sleep(4000);
         liftermotor.setPower(0.0);
-        driveBack((float)0.374);
+        driveForward((float)0.374);
         waitFor((float) 1.74);
         sleep(1000);
         
         while(true)
         {
             angles = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
-            if (angles.firstAngle < 88) {
+            if (angles.firstAngle < 84) {
                 
                 telemetry.addData("Left", "yes: " + angles.firstAngle);
                 telemetry.update();
@@ -218,15 +216,15 @@ public class Auto extends LinearOpMode {
         // bringDown();
         // driveBack((float) 0.5);
         // waitFor((float) 1.0);
-        driveForward((float)0.4225);
+        driveForward((float)0.2);
         //waitFor((float) 0.3);
         // Drop block
         sleep(1000);
         dropBlock();
         sleep(1000);
-        liftBlock();
-        sleep(3000);
-        driveBack((float)0.1);
+        // liftBlock();
+        // sleep(3000);
+        driveBack((float)0.155);
         
         //driveBack((float)0.1);
         waitFor((float) 0.001);

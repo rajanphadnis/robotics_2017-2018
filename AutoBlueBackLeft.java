@@ -85,31 +85,63 @@ public class AutoBlueBackLeft extends LinearOpMode{
         }
     }
     public void turnRight() {
+        BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
+        BNO055IMU imu = hardwareMap.get(BNO055IMU.class, "gs");
+        imu.initialize(parameters);
+        Orientation angles = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
         // telemetry.addD
-        drivefrontone.setPower(0.35);
-        drivefronttwo.setPower(0.35);
-        drivebackone.setPower(0.35);
-        drivebacktwo.setPower(0.35);
-        while (opModeIsActive() && (runtime.seconds() < 0.3)) {
-            telemetry.addData("Path", "Turning Left: %2.5f S Elapsed", runtime.seconds());
-            telemetry.update();
+        while(true)
+        {
+            angles = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
+            if (angles.firstAngle < 84) {
+                
+                telemetry.addData("Right", "yes: " + angles.firstAngle);
+                telemetry.update();
+                drivefrontone.setPower(0.35);
+                drivefronttwo.setPower(0.35);
+                drivebackone.setPower(0.35);
+                drivebacktwo.setPower(0.35);
+            }
+            else {
+                telemetry.addData("Right","no" + angles.firstAngle);
+                drivebackone.setPower(0.0);
+                drivebacktwo.setPower(0.0);
+                drivefrontone.setPower(0.0);
+                drivefronttwo.setPower(0.0);
+                break;
+            }
         }
         
     }
     public void turnLeft() {
-        while(angles.firstAngle <= 90)
+        BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
+        BNO055IMU imu = hardwareMap.get(BNO055IMU.class, "gs");
+        imu.initialize(parameters);
+        Orientation angles = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
+       while(true)
         {
-            drivefrontone.setPower(-0.35);
-            drivefronttwo.setPower(-0.35);
-            drivebackone.setPower(-0.35);
-            drivebacktwo.setPower(-0.35);
-            break;
+            angles = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
+            if (angles.firstAngle < 84) {
+                
+                telemetry.addData("Left", "yes: " + angles.firstAngle);
+                telemetry.update();
+                drivefrontone.setPower(-0.35);
+                drivefronttwo.setPower(-0.35);
+                drivebackone.setPower(-0.35);
+                drivebacktwo.setPower(-0.35);
+            }
+            else {
+                telemetry.addData("Left","no" + angles.firstAngle);
+                drivebackone.setPower(0.0);
+                drivebacktwo.setPower(0.0);
+                drivefrontone.setPower(0.0);
+                drivefronttwo.setPower(0.0);
+                break;
+            }
         }
-        runtime.reset();
-        while (opModeIsActive() && (runtime.seconds() < 0.3)) {
-            telemetry.addData("Path", "Turning Left: %2.5f S Elapsed", runtime.seconds());
-            telemetry.update();
-        }
+    }
+    public void sleepy(int time22) {
+        sleep(time22*1000);
     }
     @Override
     public void runOpMode() {

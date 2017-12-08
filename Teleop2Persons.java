@@ -1,5 +1,3 @@
-
-
 package org.firstinspires.ftc.teamcode;
 
 import android.app.Activity;
@@ -25,7 +23,7 @@ import android.graphics.Color;
 
 
 //@Disabled
-public class POVTeleop extends OpMode {
+public class Teleop2Persons extends OpMode {
     
     //Declaring variables
     Servo servoRB;
@@ -46,8 +44,8 @@ public class POVTeleop extends OpMode {
    long setTime = System.currentTimeMillis();
    boolean hasRun = false;
    // Assignments for lift, however UNUSED CODE
-    final double LIFTERMOTORUP      = 0.5;                            // sets rate to move servo
-    final double LIFTERMOTORDOWN      = -0.5;
+    final double LIFTERMOTORUP      = 1;                            // sets rate to move servo
+    final double LIFTERMOTORDOWN      = -1;
     
     
     
@@ -87,13 +85,13 @@ public class POVTeleop extends OpMode {
     public void loop() {
         //float hsvValues[] = {0F,0F,0F};
         //final float values[] = hsvValues;
-        float rightone = gamepad1.left_stick_y;
+        /*float rightone = gamepad1.left_stick_y;
         float leftone = -gamepad1.left_stick_y;
         float speed = gamepad1.right_stick_x;
-        // float right2 = -gamepad1.right_trigger;
-        // float left2 = gamepad1.left_trigger;
-        // float rightone = gamepad1.right_stick_y;
-        // float leftone = -gamepad1.left_stick_y;
+        float right2 = -gamepad1.right_trigger;
+        float left2 = gamepad1.left_trigger;*/
+        float rightone = gamepad1.right_stick_y;
+        float leftone = -gamepad1.left_stick_y;
         float relicpower = gamepad2.right_stick_y;
         
         float var = (float) 0.75;
@@ -102,12 +100,12 @@ public class POVTeleop extends OpMode {
          //clip the right/left values so that the values never exceed +/- 1
          
         // Creating motor power ranges for driving and relic thrower 
-        rightone = Range.clip(rightone,(float) -1.0,(float) 1.0);
-        leftone = Range.clip(leftone,(float) -1.0,(float) 1.0);
+        rightone = Range.clip(rightone,(float) -1,(float) 1);
+        leftone = Range.clip(leftone,(float) -1,(float) 1);
         //rightone = Range.clip(rightone, var2, var);
         //leftone = Range.clip(leftone, var2, var);
         //speed = Range.clip(speed, (float) -1.0, (float) 1.0);
-        relicpower = Range.clip(relicpower, (float) -0.4, (float) 0.4);
+        relicpower = Range.clip(relicpower, (float) -1, (float) 1);
         
         telemetry.update();
         // Servo (open)
@@ -180,21 +178,22 @@ public class POVTeleop extends OpMode {
         }
         
         //Enables left to be initialized for motor power
-        double left;
-        left = -gamepad2.left_stick_y;
+        double left = -gamepad2.left_stick_y;
         //setting lifter power
         liftermotor.setPower(left);
-        double left_value2 = gamepad1.right_trigger;
-        double right_value = gamepad1.left_trigger;
+        
+        
+        
+
         //setting driving motor powers
-        drivefrontone.setPower(rightone+speed+right_value-left_value2);
-        drivebackone.setPower(rightone+speed+right_value-left_value2);
-        drivefronttwo.setPower(leftone+speed-right_value+left_value2);
-        drivebacktwo.setPower(leftone+speed-right_value+left_value2);
-        // drivefrontone.setPower(rightone);
-        // drivebackone.setPower(rightone);
-        // drivefronttwo.setPower(leftone);
-        // drivebacktwo.setPower(leftone);
+        //drivefrontone.setPower(rightone+speed);
+        //drivebackone.setPower(rightone+speed);
+        //drivefronttwo.setPower(leftone+speed);
+        //drivebacktwo.setPower(leftone+speed);
+        drivefrontone.setPower(rightone);
+        drivebackone.setPower(rightone);
+        drivefronttwo.setPower(leftone);
+        drivebacktwo.setPower(leftone);
         
         relicthrower.setPower(relicpower);
         

@@ -109,14 +109,14 @@ public class Teleop extends OpMode {
         
         telemetry.update();
         // Servo (open)
-         if(gamepad1.b){
+         if(gamepad1.a){
             servoRB.setPosition(1.45);
             servoRF.setPosition(1.45);
             servoLB.setPosition(1.45);
             servoLF.setPosition(1.45);
          }
          // Servo (close)
-         if(gamepad1.a){
+         if(gamepad1.b){
             
             servoRB.setPosition(0.0077);
             servoRF.setPosition(0.25);

@@ -19,6 +19,7 @@ import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.Range;
 
+
 import android.graphics.Color;
 @TeleOp
 
@@ -32,17 +33,21 @@ public class POVTeleop extends OpMode {
     Servo servoLB;
     Servo servoRF;
     Servo servoLF;
+    //CRServo sm;
     DcMotor liftermotor;
     DcMotor drivefrontone;
     DcMotor drivefronttwo;
     DcMotor drivebackone;
     DcMotor drivebacktwo;
     DcMotor relicthrower;
+    ElapsedTime x = new ElapsedTime();
+    Servo servoJT;
     //TouchSensor touchsensor;
     
     //private ElapsedTime runtime = new ElapsedTime();
     
-    Servo jt;
+    
+    //Servo SensorMover;
    long setTime = System.currentTimeMillis();
    boolean hasRun = false;
    // Assignments for lift, however UNUSED CODE
@@ -56,13 +61,18 @@ public class POVTeleop extends OpMode {
     public void init() {
 
 
-        
+        servoJT = hardwareMap.get(Servo.class, "jt");
         servoRB = hardwareMap.get(Servo.class, "rb");
         servoRF = hardwareMap.get(Servo.class, "rt");
         servoLB = hardwareMap.get(Servo.class, "lb");
         servoLF = hardwareMap.get(Servo.class, "lt");
+        
+        //sm = hardwareMap.get(CRServo.class, "sm");
+
         servoRB.setDirection(Servo.Direction.REVERSE);
-        servoRF.setDirection(Servo.Direction.REVERSE);
+        // servoLB.setDirection(Servo.Direction.REVERSE);
+        servoLF.setDirection(Servo.Direction.REVERSE);
+        // servoRF.setDirection(Servo.Direction.REVERSE);
         
         liftermotor = hardwareMap.dcMotor.get("liftermotor");
         liftermotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
@@ -76,7 +86,7 @@ public class POVTeleop extends OpMode {
         drivefronttwo.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         drivebackone.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         drivebacktwo.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        jt = hardwareMap.get(Servo.class, "jt");
+       
         
         
         
@@ -90,48 +100,74 @@ public class POVTeleop extends OpMode {
         float rightone = gamepad1.left_stick_y;
         float leftone = -gamepad1.left_stick_y;
         float speed = gamepad1.right_stick_x;
-        // float right2 = -gamepad1.right_trigger;
-        // float left2 = gamepad1.left_trigger;
-        // float rightone = gamepad1.right_stick_y;
-        // float leftone = -gamepad1.left_stick_y;
-        float relicpower = gamepad2.right_stick_y;
+
+        // float relicpower = gamepad2.right_stick_y;
+        float mover = gamepad2.right_stick_y;
+        telemetry.addData("SensorMover position ", servoJT.getPosition());
+        if(gamepad2.dpad_down)
+        {
+            servoJT.setPosition(servoJT.getPosition()-0.001);
+        } else if(gamepad2.dpad_up)
+        {
+            servoJT.setPosition(servoJT.getPosition()+0.001);
+        }
         
+        // servoJT.setPosition(servoJT.getPosition()+(gamepad2.right_stick_y/100));
+
         float var = (float) 0.75;
         float var2 = (float) -0.75;
         
          //clip the right/left values so that the values never exceed +/- 1
          
         // Creating motor power ranges for driving and relic thrower 
-        rightone = Range.clip(rightone,(float) -1.0,(float) 1.0);
-        leftone = Range.clip(leftone,(float) -1.0,(float) 1.0);
+        rightone = Range.clip(rightone,(float) -0.3,(float) 0.3);
+        leftone = Range.clip(leftone,(float) -0.3,(float) 0.3);
+        speed = Range.clip(speed, (float) -0.75, (float) 0.75);
         //rightone = Range.clip(rightone, var2, var);
         //leftone = Range.clip(leftone, var2, var);
         //speed = Range.clip(speed, (float) -1.0, (float) 1.0);
-        relicpower = Range.clip(relicpower, (float) -0.4, (float) 0.4);
+        // relicpower = Range.clip(relicpower, (float) -0.6, (float) 0.6);
         
         telemetry.update();
-        // Servo (open)
-         if(gamepad2.b){
-            servoRB.setPosition(1.45);
-            servoRF.setPosition(1.45);
-            servoLB.setPosition(1.45);
-            servoLF.setPosition(1.45);
-         }
-         // Servo (close)
+        // Servo all close
          if(gamepad2.a){
-            
-            servoRB.setPosition(0.0077);
-            servoRF.setPosition(0.25);
-            servoLB.setPosition(0.01);
+            servoRB.setPosition(0);
+            servoRF.setPosition(0);
+            servoLB.setPosition(0.4);
             servoLF.setPosition(0.4);
-            telemetry.addData("Servo", "A");
          }
-         if(gamepad2.y) {
-             jt.setPosition(0);
+         if(gamepad1.a){
+            servoRB.setPosition(0);
+            servoRF.setPosition(0);
+            servoLB.setPosition(0.4);
+            servoLF.setPosition(0.4);
          }
-         if(gamepad2.x) {
-             jt.setPosition(0.75);
+        //Servo Top Close
+        if(gamepad2.y) {
+            servoRB.setPosition(0);
+            servoRF.setPosition(0);
+        }
+        //Serv Top Open
+        if(gamepad2.x) {
+            servoRB.setPosition(1);
+            servoRF.setPosition(1);
+        }
+         // Servo (open)
+         if(gamepad2.b){
+            servoRB.setPosition(1);
+            servoRF.setPosition(1);
+            servoLB.setPosition(1);
+            servoLF.setPosition(1);
          }
+         if(gamepad1.b){
+            servoRB.setPosition(1);
+            servoRF.setPosition(1);
+            servoLB.setPosition(1);
+            servoLF.setPosition(1);
+         }
+        
+       
+         
         if(gamepad1.y) {
             
             telemetry.addData("Moving", "Junk");
@@ -178,10 +214,19 @@ public class POVTeleop extends OpMode {
             liftermotor.setPower(0.0);
             
         }
+        if(gamepad1.dpad_down) {
+            liftermotor.setPower(-1.0);
+        }
+        if(gamepad1.dpad_up) {
+            liftermotor.setPower(1.0);
+        }
+        
+       
         
         //Enables left to be initialized for motor power
         double left;
         left = -gamepad2.left_stick_y;
+
         //setting lifter power
         liftermotor.setPower(left);
         double left_value2 = gamepad1.right_trigger;
@@ -196,7 +241,7 @@ public class POVTeleop extends OpMode {
         // drivefronttwo.setPower(leftone);
         // drivebacktwo.setPower(leftone);
         
-        relicthrower.setPower(relicpower);
+        // relicthrower.setPower(relicpower);
         
         
     }
